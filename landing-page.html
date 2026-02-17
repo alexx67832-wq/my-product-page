@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Landing Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafaf8;
+      --white: #ffffff;
+      --ink: #1a1a18;
+      --muted: #7a7a72;
+      --accent: #c8a96e;
+      --accent-light: #f5ede0;
+      --border: #e8e8e2;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 5%;
+      background: rgba(250,250,248,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 6px 14px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding-top: 80px;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 5% 80px 7%;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s ease forwards;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 4vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      color: var(--ink);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.35s ease forwards;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 420px;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.5s ease forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.65s ease forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ink);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 16px 32px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      letter-spacing: 0.3px;
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(200,169,110,0.35);
+    }
+    .btn-primary svg { width: 16px; height: 16px; }
+
+    .btn-secondary {
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .btn-secondary:hover { color: var(--ink); }
+
+    .hero-rating {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      animation: fadeUp 0.6s 0.8s ease forwards;
+    }
+    .stars { color: var(--accent); font-size: 1rem; letter-spacing: 2px; }
+    .rating-text { font-size: 0.82rem; color: var(--muted); }
+    .rating-text strong { color: var(--ink); }
+
+    /* HERO IMAGE */
+    .hero-visual {
+      position: relative;
+      background: var(--accent-light);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,169,110,0.2) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .product-card-visual {
+      position: relative;
+      z-index: 2;
+      background: var(--white);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.08);
+      max-width: 340px;
+      width: 85%;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .product-img-placeholder {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, #f0ece4, #e8e0d0);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 4rem;
+    }
+
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .product-price {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .product-price strong {
+      font-size: 1.4rem;
+      color: var(--ink);
+      font-family: 'Playfair Display', serif;
+    }
+
+    .badge-amazon {
+      position: absolute;
+      top: -12px; right: 20px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 50px;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 100px 7%;
+      background: var(--white);
+    }
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      max-width: 480px;
+      line-height: 1.2;
+      margin-bottom: 60px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .feature-item {
+      padding: 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+    .feature-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(200,169,110,0.12);
+    }
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .feature-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      padding: 100px 7%;
+      background: var(--bg);
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .testimonial-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+    .testimonial-stars { color: var(--accent); font-size: 0.9rem; margin-bottom: 14px; }
+    .testimonial-text {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--ink);
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .author-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .author-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .author-verified {
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+      padding: 100px 7%;
+      background: var(--ink);
+      text-align: center;
+    }
+    .cta-section .section-label { color: var(--accent); }
+    .cta-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      color: var(--white);
+      max-width: 600px;
+      margin: 0 auto 20px;
+      line-height: 1.2;
+    }
+    .cta-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.5);
+      font-weight: 300;
+      max-width: 420px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 18px 40px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+    }
+    .btn-cta:hover {
+      background: #d4b87a;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(200,169,110,0.4);
+    }
+    .cta-disclaimer {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.25);
+      margin-top: 20px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 28px 7%;
+      background: #131311;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer p {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.3);
+    }
+    footer a { color: rgba(255,255,255,0.3); text-decoration: none; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 400px; order: -1; }
+      .hero-content { padding: 60px 6%; }
+      .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">ProductReview</a>
+    <span class="nav-badge">✦ Amazon Verified</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-tag">✦ Editor's Pick 2024</span>
+      <h1>The Product That <em>Changes</em> Everything</h1>
+      <p class="hero-desc">
+        Discover why over 10,000+ happy customers rate this as their #1 purchase of the year. Premium quality. Unbeatable value.
+      </p>
+      <div class="hero-cta">
+        <a href="YOUR_AMAZON_AFFILIATE_LINK_HERE" target="_blank" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Buy on Amazon
+        </a>
+        <a href="#features" class="btn-secondary">Learn more ↓</a>
+      </div>
+      <div class="hero-rating">
+        <span class="stars">★★★★★</span>
+        <span class="rating-text"><strong>4.8/5</strong> from 2,400+ reviews</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="product-card-visual">
+        <span class="badge-amazon">Best Seller</span>
+        <div class="product-img-placeholder">📦</div>
+        <div class="product-name">Your Product Name Here</div>
+        <div class="product-price">Only <strong>$XX.99</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <p class="section-label">Why You'll Love It</p>
+    <h2 class="section-title">Built for those who demand the best</h2>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Premium Quality</div>
+        <p class="feature-desc">Crafted with top-grade materials to last for years. No compromises on quality or performance.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Easy to Use</div>
+        <p class="feature-desc">Designed for simplicity. Out of the box and ready to go — no manual needed.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💎</div>
+        <div class="feature-title">Unbeatable Value</div>
+        <p class="feature-desc">Premium product at an everyday price. You won't find a better deal anywhere else.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">Amazon Guarantee</div>
+        <p class="feature-desc">Backed by Amazon's hassle-free returns policy. Shop with complete confidence.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🚀</div>
+        <div class="feature-title">Fast Delivery</div>
+        <p class="feature-desc">Prime-eligible with fast, reliable delivery right to your doorstep in 1–2 days.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🌟</div>
+        <div class="feature-title">Top Rated</div>
+        <p class="feature-desc">Among Amazon's highest-rated products in its category. Thousands of verified 5-star reviews.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <p class="section-label">Real Reviews</p>
+    <h2 class="section-title">What customers are saying</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Honestly one of the best purchases I've made on Amazon. Exceeded every expectation. Would 100% recommend to anyone."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">😊</div>
+          <div>
+            <div class="author-name">Sarah M.</div>
+            <div class="author-verified">✓ Verified Purchase</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Incredible quality for the price. Fast shipping, perfect packaging. Already ordered a second one as a gift!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">🙂</div>
+          <div>
+            <div class="author-name">James R.</div>
+            <div class="author-verified">✓ Verified Purchase</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"This is exactly what I was looking for. Simple, effective, and well made. Can't believe the price!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">😄</div>
+          <div>
+            <div class="author-name">Priya K.</div>
+            <div class="author-verified">✓ Verified Purchase</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <p class="section-label">Limited Time</p>
+    <h2 class="cta-title">Ready to experience the difference?</h2>
+    <p class="cta-sub">Join thousands of satisfied customers. Click below to get yours on Amazon today.</p>
+    <a href="YOUR_AMAZON_AFFILIATE_LINK_HERE" target="_blank" class="btn-cta">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      Shop Now on Amazon
+    </a>
+    <p class="cta-disclaimer">* As an Amazon Associate I earn from qualifying purchases.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2024 ProductReview. All rights reserved.</p>
+    <p><a href="#">Privacy Policy</a> · <a href="#">Affiliate Disclosure</a></p>
+  </footer>
+
+</body>
+</html>
